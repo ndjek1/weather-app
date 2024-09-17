@@ -1,4 +1,5 @@
 import json
+import os
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
@@ -12,7 +13,7 @@ def home(request):
 
 
 def fetch_data_from_api(request):
-    api_key = "L46CQ7A9SG3ZRC8PJBLUGVE8Q"
+    api_key = os.getenv('WEATHER_API_KEY') 
     api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Kampala,UG?key={api_key}" 
     
     

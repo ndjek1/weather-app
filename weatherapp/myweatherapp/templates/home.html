@@ -1,0 +1,36 @@
+<!-- weather_forecast.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+</head>
+<body>
+    <h1>Weather Forecast for {{ data.resolvedAddress }}</h1>
+    <p>Status Code: {{ status_code }}</p>
+    
+    {% if data %}
+        <h2>Description: {{ weather_data.description }}</h2>
+
+        <h3>15-Day Forecast:</h3>
+        <ul>
+            {% for day in data.days %}
+            <li>
+                <strong>Date:</strong> {{ day.datetime }}<br>
+                <strong>Temperature:</strong> Max: {{ day.tempmax }} °F, Min: {{ day.tempmin }} °F<br>
+                <strong>Conditions:</strong> {{ day.conditions }}<br>
+                <strong>Wind Speed:</strong> {{ day.windspeed }} mph<br>
+                <strong>Precipitation:</strong> {{ day.precip }} inches<br>
+                <strong>Humidity:</strong> {{ day.humidity }}%<br>
+                <strong>Sunrise:</strong> {{ day.sunrise }}<br>
+                <strong>Sunset:</strong> {{ day.sunset }}
+            </li>
+            <br>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Failed to retrieve weather data.</p>
+    {% endif %}
+</body>
+</html>

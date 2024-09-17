@@ -1,9 +1,10 @@
 import json
-import os
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 import requests
+from dotenv import load_dotenv
+import os
 # Create your views here.
 
 def home(request):
@@ -13,8 +14,9 @@ def home(request):
 
 
 def fetch_data_from_api(request):
-    api_key = os.getenv('WEATHER_API_KEY') 
-    api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Kampala,UG?key={api_key}" 
+    load_dotenv()  # Load environment variables from the .env file
+    api_key = os.getenv('WEATHER_API_KEY')
+    api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Entebbe,UG?key={api_key}" 
     
     
     # Make a GET request to the API

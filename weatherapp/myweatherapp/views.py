@@ -1,37 +1,51 @@
 import json
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from django.template import loader
 import requests
 from dotenv import load_dotenv
 import os
-# Create your views here.
+
+# Load environment variables at the start of the application
+load_dotenv()
 
 def home(request):
-    template = loader.get_template('home.html')
-    return HttpResponse(template.render())
-
-
+    # Simply render the home template
+    return render(request, 'home.html')
 
 def fetch_data_from_api(request):
     load_dotenv()  # Load environment variables from the .env file
-    api_key = os.getenv('WEATHER_API_KEY')
-    api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Entebbe,UG?key={api_key}" 
-    
-    
-    # Make a GET request to the API
-    response = requests.get(api_url)
-    if response.status_code == 200:
-        formatted_data = response.json() # Formatting the JSON response
-    else:
-        formatted_data = None  # Handle cases where the response is not 200
-    
-    context = {
-        'status_code': response.status_code,
-        'data': formatted_data
-    }
-    
-    # Render a template with the context
-    return render(request, 'home.html', context)
+    city = request.GET.get('city')  # Get the city from the search query
+    weather_data = None
+    status_code = None
+    error_message = None
 
+    if city:
+        api_key = os.getenv('WEATHER_API_KEY')  # Fetch API key from .env
+        if not api_key:
+            error_message = "API key is missing"
+        else:
+            api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{city},UG?key={api_key}"
+            try:
+                response = requests.get(api_url)
+                status_code = response.status_code
+
+                if response.status_code == 200:
+                    weather_data = response.json()
+                    print(weather_data)  # Debugging: Print the data returned from the API
+                else:
+                    error_message = f"Failed to fetch data. Status code: {response.status_code}"
+                    print(error_message)  # Debugging: Print any errors related to the API call
+
+            except requests.exceptions.RequestException as e:
+                error_message = f"An error occurred: {str(e)}"
+                print(error_message)  # Debugging: Print if there's an exception
+
+    context = {
+        'weather_data': weather_data,
+        'status_code': status_code,
+        'city': city,
+        'error_message': error_message,
+    }
+
+    return render(request, 'home.html', context)
 

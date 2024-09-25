@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,44 +8,11 @@
     <title>Weather App</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f0f2f5;
-        }
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-        .weather-card {
-            width: 250px;
-            margin: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
-            flex: 0 0 auto;
-        }
-
-        .weather-info {
-            font-size: 16px;
-            color: #555;
-        }
-
-        .horizontal-scroll {
-            display: flex;
-            overflow-x: auto;
-            padding: 20px;
-            gap: 20px;
-        }
-
-        .horizontal-scroll::-webkit-scrollbar {
-            display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
-        }
-
-        .horizontal-scroll {
-            -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
-            scrollbar-width: none; /* Hide scrollbar for Firefox */
-        }
-    </style>
 </head>
 <body>
+    <div class="overlay"></div>
     <div class="container">
         <h1 class="text-center">Weather App</h1>
 
@@ -67,7 +36,25 @@
             <h2 class="text-center">Weather Forecast for {{ weather_data.resolvedAddress }}</h2>
             <p class="text-center">Description: {{ weather_data.description }}</p>
 
-            <h3 class="text-center">15-Day Forecast:</h3>
+
+              <!-- Display Today's Weather Outside Scroll -->
+              <h3 class="text-center">Today's Weather:</h3>
+              <div class="today-weather">
+                  <div class="weather-icon">
+                      <i class="bi bi-cloud-sun"></i>
+                  </div>
+                  <div class="weather-info today">
+                      <p><strong>Date:</strong> {{ weather_data.days.0.datetime }}</p>
+                      <p>Temperature: Max: {{ weather_data.days.0.tempmax }} °F, Min: {{ weather_data.days.0.tempmin }} °F</p>
+                      <p>Conditions: {{ weather_data.days.0.conditions }}</p>
+                      <p>Wind Speed: {{ weather_data.days.0.windspeed }} mph</p>
+                      <p>Humidity: {{ weather_data.days.0.humidity }}%</p>
+                      <p>Sunrise: {{ weather_data.days.0.sunrise }}</p>
+                      <p>Sunset: {{ weather_data.days.0.sunset }}</p>
+                  </div>
+              </div>
+
+            <h3 class="text-center">Weather data from {{ weather_data.days.0.datetime }} to {{ last_day.datetime  }}</h3>
 
             <div class="horizontal-scroll">
                 {% for day in weather_data.days %}

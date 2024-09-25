@@ -31,7 +31,8 @@ def fetch_data_from_api(request):
 
                 if response.status_code == 200:
                     weather_data = response.json()
-                    print(weather_data)  # Debugging: Print the data returned from the API
+                    if weather_data and 'days' in weather_data and len(weather_data['days']) > 0:
+                        last_day = weather_data['days'][-1] 
                 else:
                     error_message = f"Failed to fetch data. Status code: {response.status_code}"
                     print(error_message)  # Debugging: Print any errors related to the API call
@@ -45,6 +46,7 @@ def fetch_data_from_api(request):
         'status_code': status_code,
         'city': city,
         'error_message': error_message,
+        'last_day': last_day,
     }
 
     return render(request, 'home.html', context)
